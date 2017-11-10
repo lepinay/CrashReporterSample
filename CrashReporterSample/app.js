@@ -23,8 +23,8 @@ let options = {
 };
 electron.crashReporter.start(options);
 
-function createWindow() {
-    mainWindow = new BrowserWindow({ width: 800, height: 600, webPreferences: { sandbox: true, preload: path.join(__dirname, "preload.js") } })
+function createWindow(sandboxed) {
+    mainWindow = new BrowserWindow({ title:sandboxed?"sandboxed":"NOT sandboxed", width: 800, height: 600, webPreferences: { sandbox: sandboxed, preload: path.join(__dirname, "preload.js") } })
     mainWindow.webContents.openDevTools();
 
     mainWindow.loadURL(url.format({
@@ -42,7 +42,7 @@ function createWindow() {
     });
 }
 
-app.on('ready', createWindow)
+app.on('ready', () => { createWindow(true); createWindow(false) } )
 
 app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') {
@@ -52,7 +52,8 @@ app.on('window-all-closed', function () {
 
 app.on('activate', function () {
     if (mainWindow === null) {
-        createWindow()
+        createWindow(true);
+        createWindow(false);
     }
 })
 
@@ -66,10 +67,16 @@ let menu = Menu.buildFromTemplate([{
             }
         },
         {
-            label: 'Create Renderer', click() {
-                createWindow();
+            label: 'Create Sandboxed Renderer', click() {
+                createWindow(true);
+            }
+        },
+        {
+            label: 'Create Not Sandboxed Renderer', click() {
+                createWindow(false);
             }
         }
+
     ]
 }])
 Menu.setApplicationMenu(menu)
