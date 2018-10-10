@@ -11,7 +11,7 @@ let mainWindow
 let options = {
     productName: 'CrashReporter Sample',
     companyName: 'World Company',
-    submitURL: `https://electron-crash-reporter.appspot.com/5673442888122368/create/`,
+    submitURL: `xxx`,
     uploadToServer: true,
     extra: {
         packageVersion: app.getVersion(),
